@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  # Daily against the latest Claude Code and the plugins' default branches: a plugin repository can move or
+  # rename its plugin without touching this one, and Claude Code can change how marketplaces are read.
+  schedule:
+    - cron: "47 18 * * *" # 03:47 KST
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Record the Claude Code version
+        shell: bash
+        run: echo "::notice title=Claude Code (${{ runner.os }})::$(claude --version)"
+
+      - name: Validate the marketplace
+        run: claude plugin validate .
+
+      # In an empty config folder, so nothing the runner already has gets in the way: add the marketplace
+      # from this checkout and install every plugin it lists, which fetches each one from its repository.
+      - name: Install every plugin from the marketplace
+        shell: bash
+        run: |
+          export CLAUDE_CONFIG_DIR="$RUNNER_TEMP/claude-config"
+          marketplace=$(node -p "require('./.claude-plugin/marketplace.json').name")
+          claude plugin marketplace add ./
+          for plugin in $(node -p "require('./.claude-plugin/marketplace.json').plugins.map(p => p.name).join(' ')"); do
+            claude plugin install "$plugin@$marketplace"
+          done
+          claude plugin list
+
+      - name: Build the site and check it as a crawler reads it
+        if: runner.os == 'Linux'
+        working-directory: site
+        run: |
+          npm ci
+          npm run build
+
+      - name: The plugin cards match the marketplace and each plugin's repository
+        if: runner.os == 'Linux'
+        working-directory: site
+        run: npm run sync:check
+
+      - name: The sitemap's lastmod moves with the site's text
+        if: runner.os == 'Linux' && github.event_name == 'pull_request'
+        working-directory: site
+        run: |
+          git fetch -q --depth=1 origin "$GITHUB_BASE_REF"
+          npx plugin-site lastmod FETCH_HEAD

@@ -1,0 +1,55 @@
+---
+// One page per language (/, /ko/, /ja/). The words are in src/site.json, the plugin cards in src/plugins.json
+// (copied from each plugin's own repository by scripts/sync-plugins.mjs); this file is the order of the sections.
+import site from 'virtual:plugin-site'
+import { staticPaths } from '@m1nu0x0/claude-plugin-site'
+import PluginPage from '@m1nu0x0/claude-plugin-site/components/PluginPage.astro'
+import Hero from '@m1nu0x0/claude-plugin-site/components/Hero.astro'
+import Cmd from '@m1nu0x0/claude-plugin-site/components/Cmd.astro'
+import Faq from '@m1nu0x0/claude-plugin-site/components/Faq.astro'
+import marketplace from '../../../.claude-plugin/marketplace.json'
+import { plugins } from '../plugins.json'
+
+export const getStaticPaths = () => staticPaths(site)
+
+const { lang } = Astro.props
+const t = site.languages[lang].strings
+const add = `marketplace add ${site.repo}`
+---
+<PluginPage lang={lang}>
+  <Hero slot="hero" lang={lang} />
+
+  <section aria-labelledby="install">
+    <h2 id="install" set:html={t.installTitle} />
+    <p set:html={t.installTerminal} />
+    <Cmd lang={lang} code={`/plugin ${add}`} />
+    <p set:html={t.installShell} />
+    <Cmd lang={lang} code={`claude plugin ${add}`} />
+    <p set:html={t.installNote} />
+    <p set:html={t.installDesktop} />
+  </section>
+
+  <section aria-labelledby="plugins">
+    <h2 id="plugins" set:html={t.pluginsTitle} />
+    <p set:html={t.pluginsLead} />
+    {plugins.map(p => (
+      <article class="plugin" aria-labelledby={`p-${p.name}`}>
+        <h3 id={`p-${p.name}`}><a href={p.site + p.languages[lang].path} hreflang={lang}>{p.title}</a></h3>
+        <p class="meta"><code>{p.name}</code> <span>v{p.version}</span> <a href={`https://github.com/${p.repo}`}>{p.repo}</a></p>
+        <p>{p.languages[lang].description}</p>
+        <Cmd lang={lang} code={`/plugin install ${p.name}@${marketplace.name}`} />
+      </article>
+    ))}
+  </section>
+
+  <Faq lang={lang} />
+</PluginPage>
+
+<style is:global>
+  /* Plugin cards: a name that links to the plugin's page, its ID, version and repository, one line, and its install command. */
+  .plugin { padding: 18px 0 4px; }
+  .plugin + .plugin { border-top: 1px solid var(--rule); }
+  .plugin h3 { font-size: 1.1rem; line-height: 1.4; font-weight: 600; margin: 0 0 4px; }
+  .plugin .meta { display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: baseline; font-size: 0.875rem; color: var(--dim); margin-bottom: 8px; }
+  .plugin .meta a { color: var(--dim); }
+</style>

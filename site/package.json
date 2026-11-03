@@ -1,0 +1,18 @@
+{
+  "name": "claude-plugins-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "lint": "plugin-site lint",
+    "og": "plugin-site og",
+    "sync": "node scripts/sync-plugins.mjs",
+    "sync:check": "node scripts/sync-plugins.mjs --check"
+  },
+  "dependencies": {
+    "@m1nu0x0/claude-plugin-site": "git+https://github.com/M1nu0x0/claude-plugin-site.git#v0.1.1",
+    "astro": "^7.4.4"
+  }
+}

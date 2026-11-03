@@ -1,0 +1,67 @@
+{
+  "plugins": [
+    {
+      "name": "turn-duration",
+      "repo": "M1nu0x0/claude-turn-duration",
+      "title": "TurnDuration for Claude",
+      "version": "0.1.1",
+      "site": "https://m1nu0x0.github.io/claude-turn-duration/",
+      "languages": {
+        "en": {
+          "path": "",
+          "description": "Shows the response time under each answer in Claude Desktop: how long Claude took and when it finished."
+        },
+        "ko": {
+          "path": "ko/",
+          "description": "Claude Desktop 답변 아래에 응답 시간, 즉 Claude가 답하는 데 걸린 시간과 끝난 시각을 표시합니다."
+        },
+        "ja": {
+          "path": "ja/",
+          "description": "Claude Desktop の回答の下に、応答時間（Claude が回答にかかった時間）と終了時刻を表示します。"
+        }
+      }
+    },
+    {
+      "name": "safe-zsh",
+      "repo": "M1nu0x0/claude-safe-zsh",
+      "title": "SafeZsh for Claude",
+      "version": "0.1.1",
+      "site": "https://m1nu0x0.github.io/claude-safe-zsh/",
+      "languages": {
+        "en": {
+          "path": "",
+          "description": "Claude writes bash; the Bash tool runs zsh. This plugin makes zsh read those commands like bash."
+        },
+        "ko": {
+          "path": "ko/",
+          "description": "Claude는 bash로 쓰고 Bash 도구는 zsh로 실행합니다. 이 플러그인은 zsh가 그 명령을 bash처럼 읽게 합니다."
+        },
+        "ja": {
+          "path": "ja/",
+          "description": "Claude は bash で書き、Bash ツールは zsh で実行します。このプラグインは zsh にそのコマンドを bash と同じように読ませます。"
+        }
+      }
+    },
+    {
+      "name": "utf8-guard",
+      "repo": "M1nu0x0/claude-utf8-guard",
+      "title": "UTF-8 Guard for Claude",
+      "version": "0.1.0",
+      "site": "https://m1nu0x0.github.io/claude-utf8-guard/",
+      "languages": {
+        "en": {
+          "path": "",
+          "description": "Claude sometimes writes Korean in tool calls as \\uXXXX escapes and gets a hex digit wrong. This plugin keeps it in UTF-8."
+        },
+        "ko": {
+          "path": "ko/",
+          "description": "Claude는 도구 호출의 한글을 \\uXXXX로 쓰다가 hex 한 자리를 틀리곤 합니다. 이 플러그인은 UTF-8 그대로 쓰게 합니다."
+        },
+        "ja": {
+          "path": "ja/",
+          "description": "Claude はツール呼び出しの韓国語を \\uXXXX で書き、16 進数を 1 桁間違えることがあります。このプラグインは UTF-8 のまま書かせます。"
+        }
+      }
+    }
+  ]
+}
