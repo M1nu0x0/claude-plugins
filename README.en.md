@@ -97,7 +97,7 @@ When the text changes, also set `updated` in `site/src/site.json` to that day; o
 ### Adding a plugin
 
 1. Lay out the plugin's repository like the others (`plugins/<name>/`, `site/src/site.json`).
-2. Add a `git-subdir` entry to `plugins` in `.claude-plugin/marketplace.json`.
+2. Add a `git-subdir` entry to `plugins` in `.claude-plugin/marketplace.json`. Write `url` in full, as `https://github.com/M1nu0x0/<repo>.git`: Claude Code clones the `M1nu0x0/<repo>` shorthand over SSH, so people without a GitHub SSH key could not install it.
 3. Run `cd site && npm run sync` to rebuild `src/plugins.json`, and add the plugin to `description` in `site.json` and to the table above.
 4. Raise `version` in `marketplace.json` and record it in `CHANGELOG.md`.
 

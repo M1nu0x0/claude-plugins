@@ -97,7 +97,7 @@ CI は Ubuntu、Windows、macOS でマーケットプレイスを検証し、空
 ### プラグインの追加
 
 1. プラグインのリポジトリをほかと同じ構成（`plugins/<名前>/`、`site/src/site.json`）にします。
-2. `.claude-plugin/marketplace.json` の `plugins` に `git-subdir` の項目を追加します。
+2. `.claude-plugin/marketplace.json` の `plugins` に `git-subdir` の項目を追加します。`url` は `https://github.com/M1nu0x0/<リポジトリ>.git` のように完全な URL で書きます。`M1nu0x0/<リポジトリ>` の短縮形は Claude Code が SSH でクローンするため、GitHub の SSH キーがない人はインストールできません。
 3. `cd site && npm run sync` で `src/plugins.json` を作り直し、`site.json` の `description` と上の表にプラグインを加えます。
 4. `marketplace.json` の `version` を上げ、`CHANGELOG.md` に書きます。
 

@@ -97,7 +97,7 @@ CI는 Ubuntu, Windows, macOS에서 마켓플레이스를 검증하고, 빈 설�
 ### 플러그인 추가
 
 1. 플러그인 레포를 다른 플러그인과 같은 구성(`plugins/<이름>/`, `site/src/site.json`)으로 만듭니다.
-2. `.claude-plugin/marketplace.json`의 `plugins`에 `git-subdir` 항목을 추가합니다.
+2. `.claude-plugin/marketplace.json`의 `plugins`에 `git-subdir` 항목을 추가합니다. `url`은 `https://github.com/M1nu0x0/<레포>.git`처럼 전체 주소로 씁니다. `M1nu0x0/<레포>` 축약형은 Claude Code가 SSH로 클론해서, GitHub SSH 키가 없는 사용자는 설치하지 못합니다.
 3. `cd site && npm run sync`로 `src/plugins.json`을 다시 만들고, `site.json`의 `description`과 위 표에 플러그인을 넣습니다.
 4. `marketplace.json`의 `version`을 올리고 `CHANGELOG.md`에 적습니다.
 

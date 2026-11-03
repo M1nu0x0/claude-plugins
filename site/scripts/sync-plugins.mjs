@@ -25,11 +25,17 @@ const readJson = f => JSON.parse(readFileSync(f, 'utf8'))
 /** @param {string} msg @returns {never} */
 const fail = msg => { console.error(`::error::${msg}`); process.exit(1) }
 
+// The owner/repo of a source URL. The marketplace writes full https URLs: Claude Code clones an owner/repo
+// shorthand over SSH, which fails for anyone without a GitHub SSH key.
+const GITHUB = /^https:\/\/github\.com\/([\w.-]+\/[\w.-]+?)(?:\.git)?$/
+/** @param {Entry['source']} source */
+const repoOf = source => /** @type {RegExpMatchArray} */ (source.url.match(GITHUB))[1]
+
 // A raw file of the entry's repository, at the ref the marketplace installs from.
 /** @param {Entry['source']} source @param {string} path */
 async function raw(source, path) {
   const ref = source.sha ?? source.ref ?? 'HEAD'
-  const url = `https://raw.githubusercontent.com/${source.url}/${ref}/${path}`
+  const url = `https://raw.githubusercontent.com/${repoOf(source)}/${ref}/${path}`
   const res = await fetch(url)
   if (!res.ok) fail(`${url}: HTTP ${res.status}`)
   return res.json()
@@ -38,20 +44,21 @@ async function raw(source, path) {
 /** @param {Entry} entry @param {string[]} langs @returns {Promise<Plugin>} */
 async function plugin(entry, langs) {
   const { source } = entry
-  if (source.source !== 'git-subdir' || !/^[\w.-]+\/[\w.-]+$/.test(source.url)) {
-    fail(`${entry.name}: the page reads plugins from a git-subdir source with an owner/repo url`)
+  if (source.source !== 'git-subdir' || !GITHUB.test(source.url)) {
+    fail(`${entry.name}: the page reads plugins from a git-subdir source with an https://github.com/<owner>/<repo>.git url`)
   }
+  const repo = repoOf(source)
   const manifest = await raw(source, `${source.path}/.claude-plugin/plugin.json`)
-  if (manifest.name !== entry.name) fail(`${entry.name}: ${source.url}/${source.path} is the plugin "${manifest.name}"`)
+  if (manifest.name !== entry.name) fail(`${entry.name}: ${repo}/${source.path} is the plugin "${manifest.name}"`)
   const site = await raw(source, 'site/src/site.json')
   /** @type {Record<string, Card>} */
   const languages = {}
   for (const l of langs) {
     const L = site.languages[l]
-    if (!L) fail(`${entry.name}: ${source.url} has no "${l}" page, and this site has one`)
+    if (!L) fail(`${entry.name}: ${repo} has no "${l}" page, and this site has one`)
     languages[l] = { path: L.path, description: L.ogDescription }
   }
-  return { name: entry.name, repo: source.url, title: site.name, version: manifest.version, site: site.site, languages }
+  return { name: entry.name, repo, title: site.name, version: manifest.version, site: site.site, languages }
 }
 
 const check = process.argv.includes('--check')
