@@ -4,6 +4,10 @@ All notable changes to this project are recorded here. The format follows [Keep 
 
 ## [Unreleased]
 
+### Added
+
+- `$schema` in `marketplace.json`, pointing at the Claude Code marketplace schema on SchemaStore, for editor autocomplete and checks; Claude Code ignores it at load time
+
 ## [0.1.0] - 2026-11-03
 
 ### Added

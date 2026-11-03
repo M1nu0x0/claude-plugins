@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "m1nu0x0",
   "owner": { "name": "M1nu0x0", "url": "https://github.com/M1nu0x0" },
   "description": "Every Claude Code plugin by M1nu0x0 in one marketplace: each entry installs straight from the plugin's own repository",
